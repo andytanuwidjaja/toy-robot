@@ -5,8 +5,8 @@ The application is a simulation of a toy robot moving on a square tabletop,
 of dimensions 5 units x 5 units.
 
 Syntax:
-python toy-robot.py <input-filename>
+python toy-robot.py < input-filename >
 
-where <input-filename> is the file containing a series of input commands
+where < input-filename > is the file containing a series of input commands
 for the robot.
 
