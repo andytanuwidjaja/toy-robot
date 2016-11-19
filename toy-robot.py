@@ -33,7 +33,7 @@ import sys
 
 # global variable
 # turn on verbose for more detailed output
-verbose = 1
+verbose = 0
 
 #---------------------------------------------------------
 # function definition for executeCommand
@@ -74,7 +74,7 @@ def executeCommand(robotState,tabletop,commandLine):
     tmpState = commandList[1].split(",")
     robotFutureState = [int(tmpState[0]),int(tmpState[1]),tmpState[2]]
   else:
-    if not robot:
+    if not robotState:
       # the initial state of the robot is an empty list, which means robot is not on the table
       # ignore all the commands and keep the robot in its initial state
       robotFutureState = []
@@ -90,18 +90,27 @@ def executeCommand(robotState,tabletop,commandLine):
         # Find its future state, x,y position remains the same, direction is new based on the mapping
         robotFutureState = [robotState[0],robotState[1],rotationRightMap[robotState[2]]]        
       if commandList[0] == "REPORT":
+        # Report robot position, state remains the same
         robotFutureState = robotState
         print robotState[0] , "," , robotState[1] , "," , robotState[2]
 
-  if verbose: print "   > future state: ", robotFutureState
+  if verbose: print "   > candidate future state: ", robotFutureState
 
-  # check whether future state is a valid state (i.e. is the robot still on the table and valid direction is given)
-  if ((robotFutureState[0] >= 0 and robotFutureState[0] <= tabletop[0]) and
-      (robotFutureState[1] >= 0 and robotFutureState[1] <= tabletop[1]) and
-      (robotFutureState[2] in ['EAST','NORTH','WEST','SOUTH'])): 
+  # check whether future state is acceptable 
+  if not robotFutureState:
+     # future state is an empty list, keep initial state
+     result = robotState
+  elif ((robotFutureState[0] >= 0 and robotFutureState[0] <= tabletop[0]) and
+        (robotFutureState[1] >= 0 and robotFutureState[1] <= tabletop[1]) and
+        (robotFutureState[2] in ['EAST','NORTH','WEST','SOUTH'])): 
+     # future state is valid, robot is on the table facing to a valid direction,
+     # keep future state
      result = robotFutureState
   else:
+     # future state is not valid, keep initial state
      result = robotState
+
+  if verbose: print "   > outcome: ", result
 
   return result
 
